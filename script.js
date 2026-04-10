@@ -6,7 +6,6 @@ const chatForm = document.getElementById("chatForm");
 const chatInput = document.getElementById("chatInput");
 const chatWindow = document.getElementById("chatWindow");
 
-// أرقام واتساب - عدلهم بالأرقام الحقيقية بصيغة دولية بدون +
 const whatsappTargets = {
   bilal: {
     person: "أستاذ بلال الشيخ",
@@ -14,11 +13,10 @@ const whatsappTargets = {
   },
   mohamed: {
     person: "أستاذ محمد أبو سالم",
-    phone: "201070828389",
+    phone: "201006975169",
   },
 };
 
-// حالة الشات
 const chatState = {
   step: 0,
   data: {
@@ -28,7 +26,6 @@ const chatState = {
   },
 };
 
-// المينيو في الموبايل
 if (menuBtn && navMenu) {
   menuBtn.addEventListener("click", () => {
     navMenu.classList.toggle("active");
@@ -41,7 +38,6 @@ if (menuBtn && navMenu) {
   });
 }
 
-// أنيميشن العناصر
 if (reveals.length) {
   const observer = new IntersectionObserver(
     (entries) => {
@@ -57,14 +53,12 @@ if (reveals.length) {
   reveals.forEach((item) => observer.observe(item));
 }
 
-// حركة الإضاءة
 document.addEventListener("mousemove", (e) => {
   if (!cursorGlow) return;
   cursorGlow.style.left = `${e.clientX}px`;
   cursorGlow.style.top = `${e.clientY}px`;
 });
 
-// الهيدر
 window.addEventListener("scroll", () => {
   const header = document.querySelector(".header");
   if (!header) return;
@@ -76,8 +70,6 @@ window.addEventListener("scroll", () => {
 });
 
 function appendMessage(text, sender = "bot") {
-  if (!chatWindow) return;
-
   const wrapper = document.createElement("div");
   wrapper.className = `chat-message ${sender}`;
 
@@ -87,6 +79,46 @@ function appendMessage(text, sender = "bot") {
 
   wrapper.appendChild(bubble);
   chatWindow.appendChild(wrapper);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function showServiceButtons() {
+  const services = [
+    "دراسة جدوى",
+    "محاسبة",
+    "ضرائب",
+    "مراجعة",
+    "تاسيس شركات",
+    "تعديلات",
+    "جمعيات",
+  ];
+
+  const container = document.createElement("div");
+  container.className = "chat-options";
+
+  services.forEach((service) => {
+    const btn = document.createElement("button");
+    btn.textContent = service;
+
+    btn.onclick = () => {
+      appendMessage(service, "user");
+
+      chatState.data.service = service;
+      chatState.step = 3;
+
+      const transfer = getTransferData(service);
+      sendToWhatsApp(chatState.data, transfer);
+
+      setTimeout(() => {
+        appendMessage(getTransferMessage(service, transfer.person), "bot");
+        showRepeatOptions();
+      }, 400);
+    };
+
+    container.appendChild(btn);
+  });
+
+  chatWindow.appendChild(container);
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
@@ -103,38 +135,30 @@ function isValidPhone(text) {
   return cleaned.length >= 10;
 }
 
-function isValidService(text) {
-  const normalized = normalizeText(text);
-
-  return (
-    normalized.includes("دراسه جدوى") ||
-    normalized.includes("دراسة جدوى") ||
-    normalized.includes("محاسبه") ||
-    normalized.includes("محاسبة") ||
-    normalized.includes("ضرائب") ||
-    normalized.includes("ضرايب") ||
-    normalized.includes("ضريبة") ||
-    normalized.includes("مراجعه") ||
-    normalized.includes("مراجعة")
-  );
-}
-
 function getTransferData(service) {
   const normalized = normalizeText(service);
 
-  if (normalized.includes("مراجعه") || normalized.includes("مراجعة")) {
+  if (
+    normalized.includes("مراجعه") ||
+    normalized.includes("مراجعة") ||
+    normalized.includes("دراسه جدوى") ||
+    normalized.includes("دراسة جدوى")
+  ) {
     return whatsappTargets.bilal;
   }
 
   if (
     normalized.includes("ضرائب") ||
     normalized.includes("ضرايب") ||
-    normalized.includes("ضريبة")
+    normalized.includes("ضريبة") ||
+    normalized.includes("تاسيس")
   ) {
     return whatsappTargets.mohamed;
   }
 
-  return Math.random() > 0.5 ? whatsappTargets.bilal : whatsappTargets.mohamed;
+  return Math.random() > 0.5
+    ? whatsappTargets.bilal
+    : whatsappTargets.mohamed;
 }
 
 function sendToWhatsApp(data, transfer) {
@@ -147,44 +171,32 @@ function sendToWhatsApp(data, transfer) {
 
 يرجى متابعة العميل في أقرب وقت.`;
 
-  const url = `https://wa.me/${transfer.phone}?text=${encodeURIComponent(message)}`;
+  const url = `https://wa.me/${transfer.phone}?text=${encodeURIComponent(
+    message
+  )}`;
+
   window.open(url, "_blank");
 }
 
 function getTransferMessage(service, assignedPerson) {
-  const normalized = normalizeText(service);
-
-  if (normalized.includes("مراجعه") || normalized.includes("مراجعة")) {
-    return "شكرًا لك. تم تسجيل طلبك وسيتم تحويلك إلى أستاذ بلال الشيخ لمتابعة خدمة المراجعة. تم فتح واتساب برسالة جاهزة الآن.";
-  }
-
-  if (
-    normalized.includes("ضرائب") ||
-    normalized.includes("ضرايب") ||
-    normalized.includes("ضريبة")
-  ) {
-    return "شكرًا لك. تم تسجيل طلبك وسيتم تحويلك إلى أستاذ محمد أبو سالم لمتابعة خدمات الضرائب. تم فتح واتساب برسالة جاهزة الآن.";
-  }
-
   return `شكرًا لك. تم تسجيل طلبك وسيتم تحويلك إلى ${assignedPerson} لمتابعة طلبك. تم فتح واتساب برسالة جاهزة الآن.`;
+}
+
+function askForService() {
+  setTimeout(() => {
+    appendMessage("من فضلك اختر نوع الخدمة:", "bot");
+    showServiceButtons();
+  }, 400);
 }
 
 function showRepeatOptions() {
   setTimeout(() => {
     appendMessage(
-      "إذا أردت إدخال عملية أخرى بنفس الاسم، يرجى اختيار الخدمة مباشرة: دراسة جدوى / محاسبة / ضرائب / مراجعة. ولو عايز تبدأ باسم جديد اكتب: بدء من جديد",
+      "لو عايز خدمة تانية بنفس الاسم اختار من الأزرار. ولو عايز تبدأ باسم جديد اكتب: بدء من جديد",
       "bot"
     );
+    showServiceButtons();
   }, 700);
-}
-
-function askForService() {
-  setTimeout(() => {
-    appendMessage(
-      "تمام. من فضلك اختر نوع الخدمة: دراسة جدوى / محاسبة / ضرائب / مراجعة",
-      "bot"
-    );
-  }, 400);
 }
 
 function resetConversation() {
@@ -197,7 +209,7 @@ function resetConversation() {
 }
 
 if (chatForm && chatInput) {
-  chatForm.addEventListener("submit", async (e) => {
+  chatForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const value = chatInput.value.trim();
@@ -206,11 +218,10 @@ if (chatForm && chatInput) {
     appendMessage(value, "user");
     chatInput.value = "";
 
-    // الخطوة 1: الاسم
     if (chatState.step === 0) {
       chatState.data.name = value;
-
       chatState.step = 1;
+
       setTimeout(() => {
         appendMessage(
           `شكرًا يا ${value}. من فضلك اكتب رقم التليفون (واتساب).`,
@@ -220,7 +231,6 @@ if (chatForm && chatInput) {
       return;
     }
 
-    // الخطوة 2: رقم التليفون
     if (chatState.step === 1) {
       if (!isValidPhone(value)) {
         setTimeout(() => {
@@ -235,33 +245,6 @@ if (chatForm && chatInput) {
       return;
     }
 
-    // الخطوة 3: أول خدمة
-    if (chatState.step === 2) {
-      if (!isValidService(value)) {
-        setTimeout(() => {
-          appendMessage(
-            "من فضلك اختر خدمة صحيحة من التخصصات المتاحة فقط: دراسة جدوى / محاسبة / ضرائب / مراجعة",
-            "bot"
-          );
-        }, 400);
-        return;
-      }
-
-      chatState.data.service = value;
-      chatState.step = 3;
-
-      const transfer = getTransferData(value);
-      sendToWhatsApp(chatState.data, transfer);
-
-      setTimeout(() => {
-        appendMessage(getTransferMessage(value, transfer.person), "bot");
-        showRepeatOptions();
-      }, 400);
-
-      return;
-    }
-
-    // الخطوة 4: خدمة جديدة بنفس الاسم أو بدء من جديد
     if (chatState.step === 3) {
       if (normalizeText(value) === normalizeText("بدء من جديد")) {
         resetConversation();
@@ -272,27 +255,7 @@ if (chatForm && chatInput) {
             "bot"
           );
         }, 400);
-        return;
       }
-
-      if (!isValidService(value)) {
-        setTimeout(() => {
-          appendMessage(
-            "إذا أردت إدخال عملية أخرى بنفس الاسم، اختر الخدمة مباشرة: دراسة جدوى / محاسبة / ضرائب / مراجعة. ولو عايز تبدأ من أول وجديد اكتب: بدء من جديد",
-            "bot"
-          );
-        }, 400);
-        return;
-      }
-
-      chatState.data.service = value;
-      const transfer = getTransferData(value);
-      sendToWhatsApp(chatState.data, transfer);
-
-      setTimeout(() => {
-        appendMessage(getTransferMessage(value, transfer.person), "bot");
-        showRepeatOptions();
-      }, 400);
     }
   });
 }
