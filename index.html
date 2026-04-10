@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPO | مكتب محاسبة</title>
+  <style>
+    :root {
+      --black: #0d0d0d;
+      --black-2: #151515;
+      --beige-dark: #b69b6a;
+      --beige-mid: #9c8358;
+      --beige-soft: #d4c1a1;
+      --beige-fade: #f0e4d2;
+      --line: rgba(182, 155, 106, 0.22);
+      --white-soft: #f7f4ef;
+      --shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+      --transition: 0.35s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Tahoma, Arial, sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--black);
+      color: var(--white-soft);
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button,
+    input,
+    textarea {
+      font-family: inherit;
+    }
+
+    .container {
+      width: min(1180px, 92%);
+      margin: auto;
+    }
+
+    .cursor-glow {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(182, 155, 106, 0.13), transparent 65%);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      transition: transform 0.08s linear;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(13, 13, 13, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .navbar {
+      min-height: 82px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: var(--white-soft);
+    }
+
+    .logo span {
+      color: var(--beige-dark);
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .nav-menu a {
+      position: relative;
+      color: var(--beige-fade);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .nav-menu a::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: -8px;
+      width: 0;
+      height: 2px;
+      background: var(--beige-dark);
+      transition: var(--transition);
+    }
+
+    .nav-menu a:hover {
+      color: var(--beige-dark);
+    }
+
+    .nav-menu a:hover::after {
+      width: 100%;
+    }
+
+    .menu-btn {
+      display: none;
+      border: 1px solid var(--line);
+      background: var(--black-2);
+      color: var(--beige-dark);
+      padding: 10px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    .hero {
+      position: relative;
+      min-height: calc(100vh - 82px);
+      display: flex;
+      align-items: center;
+      background:
+        radial-gradient(circle at top left, rgba(182, 155, 106, 0.08), transparent 30%),
+        linear-gradient(135deg, var(--black), var(--black-2), #101010);
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 40px;
+      align-items: center;
+      padding: 70px 0;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: var(--beige-dark);
+      letter-spacing: 2px;
+      font-size: 0.85rem;
+      border: 1px solid var(--line);
+      padding: 10px 15px;
+      border-radius: 999px;
+      background: rgba(182, 155, 106, 0.06);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 4.8rem);
+      line-height: 1.15;
+      margin-bottom: 20px;
+      color: var(--white-soft);
+    }
+
+    .hero h1 span {
+      color: var(--beige-dark);
+      text-shadow: 0 0 25px rgba(182, 155, 106, 0.25);
+    }
+
+    .hero-desc {
+      color: var(--beige-fade);
+      opacity: 0.9;
+      font-size: 1.08rem;
+      max-width: 700px;
+      margin-bottom: 30px;
+      line-height: 1.9;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 170px;
+      padding: 15px 24px;
+      border-radius: 14px;
+      font-weight: 700;
+      transition: var(--transition);
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+
+    .btn-solid {
+      background: linear-gradient(135deg, var(--beige-dark), var(--beige-mid));
+      color: var(--black);
+      box-shadow: 0 8px 25px rgba(182, 155, 106, 0.25);
+    }
+
+    .btn-solid:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 32px rgba(182, 155, 106, 0.35);
+    }
+
+    .btn-outline {
+      border: 1px solid var(--beige-dark);
+      color: var(--beige-dark);
+      background: transparent;
+    }
+
+    .btn-outline:hover {
+      background: rgba(182, 155, 106, 0.1);
+      transform: translateY(-4px);
+    }
+
+    .hero-card-inner {
+      position: relative;
+      background: linear-gradient(180deg, rgba(182, 155, 106, 0.08), rgba(255,255,255,0.02));
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero-card-inner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.05), transparent);
+      transform: translateX(-100%);
+      animation: shine 6s linear infinite;
+    }
+
+    .mini-line {
+      width: 70px;
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(to left, var(--beige-dark), var(--beige-soft));
+      margin-bottom: 20px;
+    }
+
+    .hero-card h3 {
+      color: var(--beige-dark);
+      margin-bottom: 14px;
+      font-size: 1.5rem;
+    }
+
+    .hero-card p {
+      color: var(--beige-fade);
+      line-height: 1.9;
+      margin-bottom: 26px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 12px;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .stat-box h4 {
+      color: var(--beige-dark);
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+    }
+
+    .stat-box span {
+      color: var(--beige-fade);
+      font-size: 0.95rem;
+    }
+
+    .hero-bg-shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(40px);
+      opacity: 0.14;
+    }
+
+    .shape-1 {
+      width: 340px;
+      height: 340px;
+      background: var(--beige-dark);
+      top: -80px;
+      right: -60px;
+      animation: floatY 6s ease-in-out infinite;
+    }
+
+    .shape-2 {
+      width: 260px;
+      height: 260px;
+      background: var(--beige-mid);
+      bottom: -70px;
+      left: -40px;
+      animation: floatY 8s ease-in-out infinite reverse;
+    }
+
+    .section {
+      position: relative;
+      padding: 110px 0;
+      z-index: 2;
+    }
+
+    .section-head {
+      margin-bottom: 50px;
+      text-align: center;
+    }
+
+    .section-subtitle {
+      color: var(--beige-dark);
+      margin-bottom: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--white-soft);
+    }
+
+    .about {
+      background: linear-gradient(180deg, var(--black), var(--black-2));
+    }
+
+    .about-grid,
+    .services-grid,
+    .partners-grid,
+    .booking-layout {
+      display: grid;
+      gap: 24px;
+    }
+
+    .about-grid,
+    .partners-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .services-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .booking-layout {
+      grid-template-columns: 0.9fr 1.1fr;
+      align-items: start;
+    }
+
+    .about-card,
+    .partner-card,
+    .contact-box,
+    .chatbot-card,
+    .service-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(182,155,106,0.05));
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    .about-card,
+    .partner-card,
+    .contact-box,
+    .chatbot-card,
+    .service-card {
+      padding: 30px;
+    }
+
+    .about-card h3,
+    .partner-card h3,
+    .contact-box h3,
+    .service-card h3 {
+      color: var(--beige-dark);
+      margin-bottom: 16px;
+    }
+
+    .about-card p,
+    .partner-card p,
+    .contact-box p,
+    .service-card p {
+      color: var(--beige-fade);
+      line-height: 1.9;
+    }
+
+    .services {
+      background: linear-gradient(180deg, var(--black-2), #111111), var(--black-2);
+    }
+
+    .service-number {
+      display: inline-block;
+      font-size: 2rem;
+      font-weight: 900;
+      color: rgba(182, 155, 106, 0.28);
+      margin-bottom: 16px;
+    }
+
+    .partners {
+      background: linear-gradient(180deg, #111111, var(--black-2));
+    }
+
+    .partner-label {
+      display: inline-block;
+      margin-bottom: 16px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--beige-dark);
+      background: rgba(182, 155, 106, 0.08);
+      font-weight: 700;
+    }
+
+    .booking {
+      background: linear-gradient(180deg, var(--black-2), var(--black));
+    }
+
+    .booking-info {
+      display: grid;
+      gap: 20px;
+    }
+
+    .services-list {
+      list-style: disc;
+      padding-right: 22px;
+      margin-top: 14px;
+    }
+
+    .services-list li {
+      color: var(--beige-fade);
+      margin-bottom: 10px;
+      line-height: 1.8;
+    }
+
+    .chatbot-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 18px;
+    }
+
+    .chatbot-mini {
+      color: var(--beige-dark);
+      letter-spacing: 2px;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+    }
+
+    .chatbot-status {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(182, 155, 106, 0.12);
+      color: var(--beige-dark);
+      border: 1px solid var(--line);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .chat-window {
+      min-height: 430px;
+      max-height: 430px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 8px 4px 16px;
+    }
+
+    .chat-message {
+      display: flex;
+    }
+
+    .chat-message.user {
+      justify-content: flex-start;
+    }
+
+    .chat-message.bot {
+      justify-content: flex-end;
+    }
+
+    .message-bubble {
+      max-width: 78%;
+      padding: 14px 16px;
+      border-radius: 18px;
+      line-height: 1.9;
+      animation: bubbleUp 0.35s ease;
+    }
+
+    .chat-message.user .message-bubble {
+      background: rgba(182, 155, 106, 0.12);
+      border: 1px solid rgba(182, 155, 106, 0.24);
+      color: var(--beige-fade);
+      border-bottom-left-radius: 6px;
+    }
+
+    .chat-message.bot .message-bubble {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--line);
+      color: var(--white-soft);
+      border-bottom-right-radius: 6px;
+    }
+
+    .chat-form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .chat-form input {
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(182, 155, 106, 0.22);
+      color: var(--white-soft);
+      border-radius: 16px;
+      padding: 16px 18px;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .chat-form input::placeholder {
+      color: rgba(240, 228, 210, 0.55);
+    }
+
+    .chat-form input:focus {
+      border-color: var(--beige-dark);
+      box-shadow: 0 0 0 4px rgba(182, 155, 106, 0.12);
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      background: #090909;
+      padding: 28px 0;
+      text-align: center;
+    }
+
+    .footer p {
+      color: rgba(240, 228, 210, 0.7);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: 0.9s ease;
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .delay-1 {
+      transition-delay: 0.15s;
+    }
+
+    .delay-2 {
+      transition-delay: 0.3s;
+    }
+
+    @keyframes floatY {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(20px); }
+    }
+
+    @keyframes shine {
+      100% { transform: translateX(100%); }
+    }
+
+    @keyframes bubbleUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .hero-grid,
+      .about-grid,
+      .services-grid,
+      .partners-grid,
+      .booking-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .menu-btn {
+        display: block;
+      }
+
+      .nav-menu {
+        position: absolute;
+        top: 84px;
+        right: 4%;
+        left: 4%;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        background: rgba(15, 15, 15, 0.98);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 22px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-12px);
+        transition: var(--transition);
+      }
+
+      .nav-menu.active {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 20px;
+      }
+
+      .hero-grid {
+        padding: 60px 0;
+      }
+
+      .stats,
+      .chat-form {
+        grid-template-columns: 1fr;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor-glow"></div>
+
+  <header class="header">
+    <div class="container navbar">
+      <a href="#home" class="logo">I<span>PO</span></a>
+
+      <nav id="navMenu" class="nav-menu">
+        <a href="#home">الرئيسية</a>
+        <a href="#about">من نحن</a>
+        <a href="#services">الخدمات</a>
+        <a href="#partners">الشركاء</a>
+        <a href="#contact">الحجز الذكي</a>
+      </nav>
+
+      <button id="menuBtn" class="menu-btn">☰</button>
+    </div>
+  </header>
+
+  <section class="hero" id="home">
+    <div class="container hero-grid">
+      <div class="hero-text reveal active">
+        <p class="hero-tag">IPO ACCOUNTING OFFICE</p>
+        <h1>الدقة المالية<br />تبدأ مع <span>IPO</span></h1>
+        <p class="hero-desc">
+          مكتب محاسبة متخصص في تقديم خدمات المحاسبة والمراجعة والضرائب والاستشارات
+          المالية للشركات والأفراد بأسلوب احترافي يعكس الثقة والخبرة.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#services" class="btn btn-solid">اكتشف خدماتنا</a>
+          <a href="#contact" class="btn btn-outline">احجز الآن</a>
+        </div>
+      </div>
+
+      <div class="hero-card reveal active delay-1">
+        <div class="hero-card-inner">
+          <div class="mini-line"></div>
+          <h3>حلول محاسبية دقيقة</h3>
+          <p>
+            نساعدك في تنظيم حساباتك، متابعة الضرائب، وإعداد التقارير المالية التي
+            تدعم نمو أعمالك بثقة.
+          </p>
+
+          <div class="stats">
+            <div class="stat-box">
+              <h4>+10</h4>
+              <span>سنوات خبرة</span>
+            </div>
+            <div class="stat-box">
+              <h4>+250</h4>
+              <span>عميل</span>
+            </div>
+            <div class="stat-box">
+              <h4>%98</h4>
+              <span>رضا العملاء</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-bg-shape shape-1"></div>
+    <div class="hero-bg-shape shape-2"></div>
+  </section>
+
+  <section class="section about" id="about">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="section-subtitle">من نحن</p>
+        <h2>شريكك المالي الموثوق</h2>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-card reveal">
+          <h3>خبرة ومصداقية</h3>
+          <p>
+            في IPO نؤمن أن النجاح المالي يبدأ من نظام محاسبي قوي وواضح. لذلك نقدم
+            حلولًا متكاملة تساعد أصحاب الأعمال على اتخاذ قرارات دقيقة اعتمادًا على
+            أرقام واضحة وتقارير موثوقة.
+          </p>
+        </div>
+
+        <div class="about-card reveal delay-1">
+          <h3>رؤية احترافية</h3>
+          <p>
+            نهتم بالتفاصيل، نلتزم بالمواعيد، ونعمل على توفير خدمات محاسبية واستشارية
+            بجودة عالية تناسب الشركات الناشئة، الصغيرة، والمتوسطة.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section services" id="services">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="section-subtitle">خدماتنا</p>
+        <h2>خدمات محاسبية متكاملة</h2>
+      </div>
+
+      <div class="services-grid">
+        <article class="service-card reveal">
+          <span class="service-number">01</span>
+          <h3>إمساك الدفاتر</h3>
+          <p>تسجيل وتنظيم العمليات المالية اليومية بشكل دقيق يساعدك على متابعة الأداء المالي بوضوح.</p>
+        </article>
+
+        <article class="service-card reveal delay-1">
+          <span class="service-number">02</span>
+          <h3>إعداد القوائم المالية</h3>
+          <p>إعداد قوائم مالية احترافية تُمكنك من تقييم وضعك المالي واتخاذ قرارات صحيحة.</p>
+        </article>
+
+        <article class="service-card reveal delay-2">
+          <span class="service-number">03</span>
+          <h3>الإقرارات الضريبية</h3>
+          <p>تجهيز وتقديم الإقرارات الضريبية مع الالتزام بالمتطلبات القانونية والتنظيمية.</p>
+        </article>
+
+        <article class="service-card reveal">
+          <span class="service-number">04</span>
+          <h3>المراجعة والتدقيق</h3>
+          <p>مراجعة الحسابات والتأكد من دقة السجلات المالية وتحسين الرقابة الداخلية.</p>
+        </article>
+
+        <article class="service-card reveal delay-1">
+          <span class="service-number">05</span>
+          <h3>استشارات مالية</h3>
+          <p>دعم إداري ومالي يساعدك على تحسين الأداء وتقليل المخاطر وتحقيق الاستقرار.</p>
+        </article>
+
+        <article class="service-card reveal delay-2">
+          <span class="service-number">06</span>
+          <h3>دراسة جدوى</h3>
+          <p>تحليل مالي وتشغيلي أولي للمشروعات لمساعدتك على اتخاذ قرار استثماري أو تشغيلي صحيح.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section partners" id="partners">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="section-subtitle">الشركاء</p>
+        <h2>فريق القيادة في IPO</h2>
+      </div>
+
+      <div class="partners-grid">
+        <div class="partner-card reveal">
+          <span class="partner-label">الشريك التنفيذي</span>
+          <h3>أستاذ بلال الشيخ</h3>
+          <p>
+            مسؤول عن متابعة العمليات التنفيذية وتقديم الحلول المحاسبية والاستشارية باحترافية عالية لعملاء المكتب.
+          </p>
+        </div>
+
+        <div class="partner-card reveal delay-1">
+          <span class="partner-label">شريك الضرائب</span>
+          <h3>أستاذ محمد أبو سالم</h3>
+          <p>
+            متخصص في خدمات الضرائب والإقرارات والفحص الضريبي مع خبرة قوية في التعامل مع الملفات الضريبية المختلفة.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section booking" id="contact">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="section-subtitle">المساعد الذكي</p>
+        <h2>احجز موعدك من خلال الشات الذكي</h2>
+      </div>
+
+      <div class="booking-layout">
+        <div class="booking-info reveal">
+          <div class="contact-box">
+            <h3>كيف يعمل المساعد؟</h3>
+            <p>
+              المساعد الذكي يرحب بالعميل، يجمع الاسم ورقم التليفون (واتساب)، ثم يحدد
+              الخدمة المطلوبة ويوجه الطلب مباشرة إلى الشخص المناسب داخل المكتب.
+            </p>
+            <p>
+              هذا النظام يضمن سرعة الاستجابة، تخصيص الخدمة، وتحسين تجربة العميل من
+              خلال تواصل مباشر وسلس مع فريقنا.
+            </p>
+          </div>
+
+          <div class="contact-box">
+            <h3>التخصصات المتاحة</h3>
+            <ul class="services-list">
+              <li>دراسة جدوى</li>
+              <li>محاسبة</li>
+              <li>ضرائب</li>
+              <li>مراجعة</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="chatbot-card reveal delay-1">
+          <div class="chatbot-header">
+            <div>
+              <p class="chatbot-mini">IPO SMART ASSISTANT</p>
+              <h3>المساعد الذكي للحجوزات</h3>
+            </div>
+            <span class="chatbot-status">متصل</span>
+          </div>
+
+          <div class="chat-window" id="chatWindow">
+            <div class="chat-message bot">
+              <div class="message-bubble">أهلاً بك مع المساعد الذكي لـ IPO. من فضلك اكتب اسمك الكامل.</div>
+            </div>
+          </div>
+
+          <form id="chatForm" class="chat-form">
+            <input type="text" id="chatInput" placeholder="اكتب رسالتك هنا..." autocomplete="off" required />
+            <button type="submit" class="btn btn-solid">إرسال</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 IPO - جميع الحقوق محفوظة</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
