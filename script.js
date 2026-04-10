@@ -88,7 +88,7 @@ function showServiceButtons() {
     "محاسبة",
     "ضرائب",
     "مراجعة",
-    "تاسيس شركات",
+    "تأسيس شركات",
     "تعديلات",
     "جمعيات",
   ];
@@ -151,19 +151,12 @@ function getTransferData(service) {
     normalized.includes("ضرائب") ||
     normalized.includes("ضرايب") ||
     normalized.includes("ضريبة") ||
-    normalized.includes("تأسيس شركات")
+    normalized.includes("تأسيس شركات")||normalized.includes("تاسيس شركات") 
   ) {
     return whatsappTargets.mohamed;
   }
 
-  else if (normalized.includes("تعديلات") || normalized.includes("جمعيات") || normalized.includes("محاسبة")) {
-    return whatsappTargets.random() > 0.5 ? whatsappTargets.bilal : whatsappTargets.mohamed;
-  }
   
-
-  return Math.random() > 0.5
-    ? whatsappTargets.bilal
-    : whatsappTargets.mohamed;
 }
 
 function sendToWhatsApp(data, transfer) {
