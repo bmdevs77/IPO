@@ -151,10 +151,15 @@ function getTransferData(service) {
     normalized.includes("ضرائب") ||
     normalized.includes("ضرايب") ||
     normalized.includes("ضريبة") ||
-    normalized.includes("تاسيس")
+    normalized.includes("تأسيس شركات")
   ) {
     return whatsappTargets.mohamed;
   }
+
+  else if (normalized.includes("تعديلات") || normalized.includes("جمعيات") || normalized.includes("محاسبة")) {
+    return whatsappTargets.random() > 0.5 ? whatsappTargets.bilal : whatsappTargets.mohamed;
+  }
+  
 
   return Math.random() > 0.5
     ? whatsappTargets.bilal
